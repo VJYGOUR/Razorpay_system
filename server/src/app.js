@@ -4,9 +4,10 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import path from "path";
 import { fileURLToPath } from "url";
-
+import "./passport.js";
 import healthRoute from "./routes/health.route.js";
 import authRoutes from "./routes/auth.route.js";
+import protectedRoutes from "./routes/protected.routes.js";
 
 // import paymentRoutes from "./routes/payment.route.js";
 
@@ -36,6 +37,7 @@ app.use(express.json());
 // Routes
 app.use("/api/health", healthRoute);
 app.use("/api/auth", authRoutes);
+app.use("/api/protected", protectedRoutes);
 
 // app.use("/api/admin", adminRoutes);
 

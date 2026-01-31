@@ -1,26 +1,38 @@
 import express from "express";
+import passport from "passport";
 import {
-  login,
+  googleCallback,
   logout,
   refreshToken,
-  signup,
   me,
-  verifyEmail,
-  resendVerificationEmail,
 } from "../controllers/auth.controllers.js";
-import { debugTokens } from "../controllers/auth.controllers.js";
-import { protect } from "../middleware/auth.js";
+import { protect } from "../middleware/auth.js"; // JWT cookie middleware
 
 const router = express.Router();
 
-router.post("/signup", signup);
-router.post("/login", login);
-router.post("/logout", logout);
-router.post("/refresh-token", refreshToken);
-router.get("/me", protect, me); // ← CHANGE THIS LINE
-router.get("/verify-email", verifyEmail); // Email verification route
-router.post("/resend-verification", resendVerificationEmail); // Resend verification
+// 🌐 1️⃣ Redirect to Google login
+router.get(
+  "/google",
+  passport.authenticate("google", { scope: ["profile", "email"] }),
+);
 
-router.get("/debug-tokens", debugTokens);
+// ✅ 2️⃣ Google OAuth callback
+router.get(
+  "/google/callback",
+  passport.authenticate("google", {
+    session: false,
+    failureRedirect: "/login",
+  }),
+  googleCallback, // controller handles JWT creation + cookies
+);
+
+// 🔄 3️⃣ Refresh access token
+router.get("/refresh-token", refreshToken);
+
+// 🔐 4️⃣ Logout user (optional: protect if you want only logged-in users to logout)
+router.get("/logout", protect, logout);
+
+// 👤 5️⃣ Get current logged-in user (protected route!)
+router.get("/me", protect, me);
 
 export default router;
