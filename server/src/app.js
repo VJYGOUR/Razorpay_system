@@ -13,7 +13,7 @@ import paymentRoutes from "./routes/payment.route.js";
 // import paymentRoutes from "./routes/payment.route.js";
 
 const app = express();
-
+app.enable("trust proxy");
 // __dirname polyfill for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
