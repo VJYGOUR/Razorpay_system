@@ -23,7 +23,7 @@ passport.use(
           });
         }
 
-        done(null, user);
+        done(null, user); // This user becomes req.user
       } catch (err) {
         done(err, null);
       }

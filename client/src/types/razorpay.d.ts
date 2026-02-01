@@ -29,6 +29,7 @@ declare global {
 export interface CreateOrderResponse {
   orderId: string;
   amount: number;
+  keyId: string;
 }
 
 export interface VerifyPaymentPayload {

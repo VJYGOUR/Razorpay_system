@@ -144,7 +144,7 @@ export const googleCallback = async (req, res) => {
     });
 
     // Redirect to frontend
-    res.redirect(process.env.FRONTEND_URL);
+    res.redirect(process.env.FRONTEND_URL); //React app reloads (full page navigation).
   } catch (err) {
     console.error("Google callback error:", err.message);
     res

@@ -27,7 +27,7 @@ router.get(
 );
 
 // 🔄 3️⃣ Refresh access token
-router.get("/refresh-token", refreshToken);
+router.post("/refresh-token", refreshToken);
 
 // 🔐 4️⃣ Logout user (optional: protect if you want only logged-in users to logout)
 router.get("/logout", protect, logout);

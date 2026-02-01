@@ -1,29 +1,48 @@
 import { useState } from "react";
 import axios from "../axios/axios";
+import { useAuth } from "../context/AuthContext";
 import type {
   CreateOrderResponse,
   VerifyPaymentPayload,
 } from "../types/razorpay";
+import { loadRazorpay } from "../utils/loadRazorpay";
 
 const TEST_AMOUNT = 100; // ₹1.00 (paise)
 
 const TestPayment: React.FC = () => {
+  const { user, openLoginModal, loginOpen } = useAuth();
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
-
+  console.log("componet is executed");
   const startPayment = async (): Promise<void> => {
+    if (!user) {
+      // Open login modal if not logged in
+      console.log("no user");
+      console.log(loginOpen);
+      console.log(openLoginModal);
+      openLoginModal();
+      return;
+    }
+
     try {
       setLoading(true);
       setMessage("");
+      const loaded = await loadRazorpay();
+      if (!loaded) {
+        setMessage("❌ Razorpay SDK failed to load");
+        return;
+      }
 
-      // 1. Create order
+      // 1️⃣ Create Razorpay order (backend will also create customer if needed)
       const { data } = await axios.post<CreateOrderResponse>(
         "/payments/create-order",
-        { amount: TEST_AMOUNT },
+        {
+          amount: TEST_AMOUNT,
+        },
       );
 
       const options: RazorpayOptions = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID as string,
+        key: data.keyId,
         amount: data.amount,
         currency: "INR",
         name: "MERN Payment System",
@@ -37,8 +56,12 @@ const TestPayment: React.FC = () => {
             razorpay_signature: response.razorpay_signature,
           };
 
-          await axios.post("/payments/verify", payload);
-          setMessage("✅ Payment successful and verified");
+          const res = await axios.post("/payments/verify", payload);
+          if (res.data.success) {
+            setMessage("✅ Payment successful and verified");
+          } else {
+            setMessage("✅ Payment successful and verified");
+          }
         },
 
         theme: {
@@ -89,18 +112,17 @@ const TestPayment: React.FC = () => {
           disabled={loading}
           className="w-full py-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-semibold transition"
         >
-          {loading ? "Opening Checkout..." : "Pay ₹1 (Test)"}
+          {loading
+            ? "Opening Checkout..."
+            : user
+              ? "Pay ₹1 (Test)"
+              : "Login to Pay"}
         </button>
 
         {/* RESULT */}
         {message && (
           <div className="text-center text-sm font-medium">{message}</div>
         )}
-
-        {/* FOOTER */}
-        <p className="text-xs text-gray-500 text-center">
-          No real money is charged. Payments use Razorpay test credentials.
-        </p>
       </div>
     </div>
   );

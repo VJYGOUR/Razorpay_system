@@ -2,36 +2,94 @@ import mongoose from "mongoose";
 
 const paymentSchema = new mongoose.Schema(
   {
-    userId: {
+    /* ───────────── RELATION ───────────── */
+    user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      index: true,
     },
-    enrollmentId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Enrollment",
+
+    /* ───────────── PAYMENT TYPE ───────────── */
+    type: {
+      type: String,
+      enum: ["one_time", "subscription"],
       required: true,
     },
+
+    purpose: {
+      type: String,
+      // examples: "starter_plan", "pro_plan", "credits", "lifetime_access"
+    },
+
+    /* ───────────── RAZORPAY IDS ───────────── */
     razorpayOrderId: {
       type: String,
-      required: true,
-      unique: true,
+      index: true,
     },
+
     razorpayPaymentId: {
       type: String,
+      index: true,
     },
-    razorpaySignature: { type: String },
+
+    razorpaySignature: String,
+
+    razorpaySubscriptionId: {
+      type: String,
+      index: true,
+    },
+
+    razorpayCustomerId: {
+      type: String,
+      index: true,
+    },
+
+    /* ───────────── MONEY ───────────── */
     amount: {
       type: Number,
-      required: true,
+      required: true, // in paise
     },
+
+    currency: {
+      type: String,
+      default: "INR",
+    },
+
+    /* ───────────── STATUS ───────────── */
     status: {
       type: String,
-      enum: ["created", "paid", "failed", "verified"],
+      enum: [
+        "created", // order created
+        "authorized", // payment authorized
+        "paid", // payment successful
+        "failed",
+        "refunded",
+      ],
       default: "created",
+      index: true,
     },
+
+    /* ───────────── REFUND (OPTIONAL) ───────────── */
+    refund: {
+      refundId: String,
+      amount: Number,
+      refundedAt: Date,
+    },
+
+    /* ───────────── METADATA ───────────── */
+    notes: {
+      type: Map,
+      of: String,
+    },
+
+    /* ───────────── AUDIT ───────────── */
+    paidAt: Date,
+    failureReason: String,
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  },
 );
 
 export default mongoose.model("Payment", paymentSchema);

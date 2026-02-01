@@ -8,6 +8,7 @@ import "./passport.js";
 import healthRoute from "./routes/health.route.js";
 import authRoutes from "./routes/auth.route.js";
 import protectedRoutes from "./routes/protected.routes.js";
+import paymentRoutes from "./routes/payment.route.js";
 
 // import paymentRoutes from "./routes/payment.route.js";
 
@@ -41,7 +42,7 @@ app.use("/api/protected", protectedRoutes);
 
 // app.use("/api/admin", adminRoutes);
 
-// app.use("/api/payments", paymentRoutes);
+app.use("/api/payments", paymentRoutes);
 
 // app.js
 

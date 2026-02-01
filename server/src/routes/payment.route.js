@@ -1,15 +1,13 @@
-// import express from "express";
-// import {
-//   createRazorpayOrder,
-//   razorpayWebhook,
-//   verifyPayment,
-// } from "../controllers/payment.controllers.js";
-// import { protect } from "../middleware/auth.js";
+import express from "express";
+import { protect } from "../middleware/auth.js";
+import {
+  createOrder,
+  verifyPayment,
+} from "../controllers/payment.controllers.js";
 
-// const router = express.Router();
+const router = express.Router();
 
-// router.post("/create-order", protect, createRazorpayOrder);
-// router.post("/verify", protect, verifyPayment);
-// router.post("/webhook", razorpayWebhook);
+router.post("/create-order", protect, createOrder);
+router.post("/verify", protect, verifyPayment);
 
-// export default router;
+export default router;

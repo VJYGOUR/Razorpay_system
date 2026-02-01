@@ -23,17 +23,24 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   refreshUser: () => Promise<void>;
+  openLoginModal: () => void;
+  closeLoginModal: () => void;
+  loginOpen: boolean;
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
   refreshUser: async () => {},
+  openLoginModal: () => {},
+  closeLoginModal: () => {},
+  loginOpen: false,
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loginOpen, setLoginOpen] = useState(false);
 
   const refreshUser = async () => {
     setLoading(true);
@@ -53,7 +60,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, refreshUser }}>
+    <AuthContext.Provider value={{ user, loading, refreshUser ,openLoginModal: () => setLoginOpen(true),
+        closeLoginModal: () => setLoginOpen(false),
+        loginOpen,}}>
       {children}
     </AuthContext.Provider>
   );
