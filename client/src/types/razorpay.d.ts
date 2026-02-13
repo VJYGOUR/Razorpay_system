@@ -18,6 +18,29 @@ declare global {
     theme?: {
       color?: string;
     };
+    prefill?: {
+      name?: string;
+      email?: string;
+      contact?: string;
+    };
+    config?: {
+      display?: {
+        blocks?: {
+          [key: string]: {
+            name: string;
+            instruments: {
+              method: "upi" | "card" | "netbanking" | "wallet" | "paylater";
+              banks?: string[];
+              iins?: string[];
+            }[];
+          };
+        };
+        sequence?: string[];
+        preferences?: {
+          show_default_blocks?: boolean;
+        };
+      };
+    };
   }
 
   interface RazorpayPaymentResponse {
