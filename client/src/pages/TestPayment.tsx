@@ -44,7 +44,7 @@ const TestPayment: React.FC = () => {
           amount: TEST_AMOUNT,
         },
       );
-
+console.log(data.orderId);
       const options: RazorpayOptions = {
         key: data.keyId,
         amount: data.amount,
