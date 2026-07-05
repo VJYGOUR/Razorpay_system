@@ -56,24 +56,7 @@ console.log(data.orderId);
           name: user?.name,
           email: user?.email,
         },
-        config: {
-          display: {
-            blocks: {
-              selected_methods: {
-                name: "Choose Payment Method",
-                instruments: [
-                  { method: "wallet" },
-                  { method: "card" },
-                  { method: "paylater" },
-                ],
-              },
-            },
-            sequence: ["block.selected_methods"],
-            preferences: {
-              show_default_blocks: false,
-            },
-          },
-        },
+        
 
         handler: async (response: RazorpayPaymentResponse): Promise<void> => {
           const payload: VerifyPaymentPayload = {
